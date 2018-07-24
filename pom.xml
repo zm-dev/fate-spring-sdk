@@ -6,9 +6,8 @@
 
     <groupId>com.github.zm-dev</groupId>
     <artifactId>fatesdk</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
-    <name>fastjson</name>
     <description>fate spring sdk</description>
     <url>https://github.com/zm-dev/fate-spring-sdk</url>
     <licenses>
@@ -36,6 +35,9 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         <spring.version>5.0.7.RELEASE</spring.version>
+        <javadoc.skip>false</javadoc.skip>
+        <jdk.version>1.8</jdk.version>
+        <gpg.skip>true</gpg.skip>
     </properties>
     <scm>
         <url>https://github.com/zm-dev/fate-spring-sdk</url>
@@ -145,6 +147,76 @@
                                 <requireUpperBoundDeps/>
                             </rules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+
+                <version>3.5.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac</artifactId>
+                        <version>2.7</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${javadoc.skip}</skip>
+                    <show>public</show>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <links>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <configuration>
+                    <skip>${gpg.skip}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
