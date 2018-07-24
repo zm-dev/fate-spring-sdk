@@ -11,6 +11,21 @@
     <name>fastjson</name>
     <description>fate spring sdk</description>
     <url>https://github.com/zm-dev/fate-spring-sdk</url>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>ty666</id>
+            <name>taoyu</name>
+            <email>1255803549@qq.com</email>
+        </developer>
+    </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <grpc.version>1.13.2</grpc.version><!-- CURRENT_GRPC_VERSION -->
@@ -22,6 +37,15 @@
         <maven.compiler.target>1.6</maven.compiler.target>
         <spring.version>5.0.7.RELEASE</spring.version>
     </properties>
+    <scm>
+        <url>https://github.com/zm-dev/fate-spring-sdk</url>
+        <connection>scm:git:https://git@github.com/zm-dev/fate-spring-sdk.git</connection>
+    </scm>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <dependencies>
         <dependency>
             <groupId>io.grpc</groupId>
