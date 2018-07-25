@@ -31,6 +31,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         Cookie ticketIdCookie = findCookie(ticketIdCookieKey, request);
         if (ticketIdCookie != null) {
             LoginCheckResOrBuilder loginCheckRes = loginChecker.Check(ticketIdCookie.getValue());
+            request.setAttribute("loginCheckRes", loginCheckRes);
             if (loginCheckRes.getIsLogin()) { // 登录了
                 Cookie userIdCookie = findCookie(userIdCookieKey, request);
                 String userIdStr = String.valueOf(loginCheckRes.getUserId());

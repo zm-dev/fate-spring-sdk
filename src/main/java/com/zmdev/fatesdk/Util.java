@@ -1,6 +1,8 @@
 package com.zmdev.fatesdk;
 
 
+import com.zmdev.fatesdk.pb.LoginCheckResOrBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class Util {
@@ -37,5 +39,18 @@ public class Util {
             return accept.contains("/json") || accept.contains("+json");
         }
         return false;
+    }
+
+    public static boolean isLogin(HttpServletRequest request) {
+        Object loginCheckRes = request.getAttribute("loginCheckRes");
+        return (loginCheckRes != null && ((LoginCheckResOrBuilder) loginCheckRes).getIsLogin());
+    }
+
+    public static long userId(HttpServletRequest request) {
+        Object loginCheckRes = request.getAttribute("loginCheckRes");
+        if (loginCheckRes != null) {
+            return ((LoginCheckResOrBuilder) loginCheckRes).getUserId();
+        }
+        return 0;
     }
 }
