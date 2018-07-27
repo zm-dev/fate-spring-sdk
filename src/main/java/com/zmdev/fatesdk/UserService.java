@@ -30,7 +30,7 @@ public class UserService {
     UserService(ManagedChannel channel, long timeout, AccessTokenInterceptor accessTokenInterceptor) {
         this.timeout = timeout;
         this.channel = channel;
-        blockingStub = UserServiceGrpc.newBlockingStub(ClientInterceptors.intercept(channel, accessTokenInterceptor)).withDeadline(Deadline.after(timeout, TimeUnit.MILLISECONDS));
+        blockingStub = UserServiceGrpc.newBlockingStub(ClientInterceptors.intercept(channel, accessTokenInterceptor));
     }
 
 
@@ -40,7 +40,7 @@ public class UserService {
 
     public void updatePassword(long userId, String newPassword) {
         UpdatePasswordMsg updatePasswordMsg = UpdatePasswordMsg.newBuilder().setUserId(userId).setNewPassword(newPassword).build();
-        blockingStub.updatePassword(updatePasswordMsg);
+        blockingStub.withDeadline(Deadline.after(timeout, TimeUnit.MILLISECONDS)).updatePassword(updatePasswordMsg);
     }
 
     public long register(String account, CertificateType certificateType, String password) {
@@ -48,7 +48,7 @@ public class UserService {
             return 0;
         }
         User user = User.newBuilder().setAccount(account).setCertificateType(certificateType).setPassword(password).build();
-        return blockingStub.register(user).getId();
+        return blockingStub.withDeadline(Deadline.after(timeout, TimeUnit.MILLISECONDS)).register(user).getId();
     }
 
 }
