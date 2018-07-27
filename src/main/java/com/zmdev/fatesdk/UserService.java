@@ -44,6 +44,9 @@ public class UserService {
     }
 
     public long register(String account, CertificateType certificateType, String password) {
+        if (account == null || certificateType == null || password == null) {
+            return 0;
+        }
         User user = User.newBuilder().setAccount(account).setCertificateType(certificateType).setPassword(password).build();
         return blockingStub.register(user).getId();
     }
