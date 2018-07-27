@@ -29,6 +29,8 @@ public class FateConfiguration {
     private String ticketIdCookieKey;
     @Value("${fate.user_id_cookie_key}")
     private String userIdCookieKey;
+    @Value("${fate.timeout}")
+    private int timeout;
 
     public FateConfiguration() {
     }
@@ -110,7 +112,7 @@ public class FateConfiguration {
 
     @Bean
     public AccessToken getAccessToken(@Autowired CacheManager cacheManager) {
-        return new AccessToken(this.rpcHost, this.rpcPort, this.appId, this.appSecret, cacheManager);
+        return new AccessToken(this.rpcHost, this.rpcPort, this.appId, this.appSecret, timeout, cacheManager);
     }
 
     @Bean
@@ -120,12 +122,12 @@ public class FateConfiguration {
 
     @Bean
     public LoginChecker getLoginChecker(@Autowired AccessTokenInterceptor accessTokenInterceptor) {
-        return new LoginChecker(this.rpcHost, this.rpcPort, accessTokenInterceptor);
+        return new LoginChecker(this.rpcHost, this.rpcPort, timeout, accessTokenInterceptor);
     }
 
     @Bean
     public UserService getUserService(@Autowired AccessTokenInterceptor accessTokenInterceptor) {
-        return new UserService(this.rpcHost, this.rpcPort, accessTokenInterceptor);
+        return new UserService(this.rpcHost, this.rpcPort, timeout, accessTokenInterceptor);
     }
 
     @Bean
