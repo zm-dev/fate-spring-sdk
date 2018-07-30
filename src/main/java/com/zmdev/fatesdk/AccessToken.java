@@ -69,19 +69,17 @@ public class AccessToken {
             // ehcache 不存在
             throw new RuntimeException("ehcache 不存在");
         }
+        Element accessTokenElement = c.get(ACCESS_TOKEN_CACHE_KEY);
         String accessToken;
-        synchronized (AccessToken.class){
-            Element accessTokenElement = c.get(ACCESS_TOKEN_CACHE_KEY);
-            if (accessTokenElement == null) {
-                // accessToken cache 不存在
-                AccessTokenOrBuilder atBuilder = requestToken();
-                Element e = new Element(ACCESS_TOKEN_CACHE_KEY, atBuilder.getToken());
-                e.setTimeToLive(((Long) (atBuilder.getExpiredAt() - (System.currentTimeMillis() / 1000))).intValue());
-                c.put(e);
-                accessToken = atBuilder.getToken();
-            } else {
-                accessToken = (String) accessTokenElement.getObjectValue();
-            }
+        if (accessTokenElement == null) {
+            // accessToken cache 不存在
+            AccessTokenOrBuilder atBuilder = requestToken();
+            Element e = new Element(ACCESS_TOKEN_CACHE_KEY, atBuilder.getToken());
+            e.setTimeToLive(((Long) (atBuilder.getExpiredAt() - (System.currentTimeMillis() / 1000))).intValue());
+            c.put(e);
+            accessToken = atBuilder.getToken();
+        } else {
+            accessToken = (String) accessTokenElement.getObjectValue();
         }
         return accessToken;
     }
