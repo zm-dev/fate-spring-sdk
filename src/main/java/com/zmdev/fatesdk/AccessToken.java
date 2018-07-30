@@ -10,6 +10,7 @@ import io.grpc.ManagedChannelBuilder;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+
 import java.util.concurrent.TimeUnit;
 
 public class AccessToken {
@@ -69,17 +70,20 @@ public class AccessToken {
             // ehcache 不存在
             throw new RuntimeException("ehcache 不存在");
         }
-        Element accessTokenElement = c.get(ACCESS_TOKEN_CACHE_KEY);
         String accessToken;
-        if (accessTokenElement == null) {
-            // accessToken cache 不存在
-            AccessTokenOrBuilder atBuilder = requestToken();
-            Element e = new Element(ACCESS_TOKEN_CACHE_KEY, atBuilder.getToken());
-            e.setTimeToLive(((Long) (atBuilder.getExpiredAt() - (System.currentTimeMillis() / 1000))).intValue());
-            c.put(e);
-            accessToken = atBuilder.getToken();
-        } else {
-            accessToken = (String) accessTokenElement.getObjectValue();
+        synchronized (AccessToken.class) {
+            Element accessTokenElement = c.get(ACCESS_TOKEN_CACHE_KEY);
+
+            if (accessTokenElement == null) {
+                // accessToken cache 不存在
+                AccessTokenOrBuilder atBuilder = requestToken();
+                Element e = new Element(ACCESS_TOKEN_CACHE_KEY, atBuilder.getToken());
+                e.setTimeToLive(((Long) (atBuilder.getExpiredAt() - (System.currentTimeMillis() / 1000))).intValue());
+                c.put(e);
+                accessToken = atBuilder.getToken();
+            } else {
+                accessToken = (String) accessTokenElement.getObjectValue();
+            }
         }
         return accessToken;
     }
