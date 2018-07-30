@@ -47,10 +47,12 @@ public class AccessToken {
         this.channel = channel;
         blockingStub = AccessTokenServiceGrpc.newBlockingStub(channel);
         this.singletonManager = singletonManager;
-        //建立一个缓存实例
-        Cache cache = new Cache(ACCESS_TOKEN_CACHE_NAME, 100, true, false, 5, 2);
-        //在内存管理器中添加缓存实例
-        singletonManager.addCache(cache);
+        if (singletonManager.getCache(ACCESS_TOKEN_CACHE_NAME) == null) {
+            //建立一个缓存实例
+            Cache cache = new Cache(ACCESS_TOKEN_CACHE_NAME, 100, true, false, 5, 2);
+            //在内存管理器中添加缓存实例
+            singletonManager.addCache(cache);
+        }
     }
 
     public void shutdown() throws InterruptedException {
@@ -71,20 +73,20 @@ public class AccessToken {
             throw new RuntimeException("ehcache 不存在");
         }
         String accessToken;
-        synchronized (AccessToken.class) {
-            Element accessTokenElement = c.get(ACCESS_TOKEN_CACHE_KEY);
+        //synchronized (AccessToken.class) {
+        Element accessTokenElement = c.get(ACCESS_TOKEN_CACHE_KEY);
 
-            if (accessTokenElement == null) {
-                // accessToken cache 不存在
-                AccessTokenOrBuilder atBuilder = requestToken();
-                Element e = new Element(ACCESS_TOKEN_CACHE_KEY, atBuilder.getToken());
-                e.setTimeToLive(((Long) (atBuilder.getExpiredAt() - (System.currentTimeMillis() / 1000))).intValue());
-                c.put(e);
-                accessToken = atBuilder.getToken();
-            } else {
-                accessToken = (String) accessTokenElement.getObjectValue();
-            }
+        if (accessTokenElement == null) {
+            // accessToken cache 不存在
+            AccessTokenOrBuilder atBuilder = requestToken();
+            Element e = new Element(ACCESS_TOKEN_CACHE_KEY, atBuilder.getToken());
+            e.setTimeToLive(((Long) (atBuilder.getExpiredAt() - (System.currentTimeMillis() / 1000))).intValue());
+            c.put(e);
+            accessToken = atBuilder.getToken();
+        } else {
+            accessToken = (String) accessTokenElement.getObjectValue();
         }
+        //}
         return accessToken;
     }
 }
