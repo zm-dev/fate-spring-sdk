@@ -3,6 +3,7 @@ package com.zmdev.fatesdk;
 
 import com.zmdev.fatesdk.grpc_insterceptor.AccessTokenInterceptor;
 import com.zmdev.fatesdk.spring_insterceptor.AuthInterceptor;
+import com.zmdev.fatesdk.spring_insterceptor.CheckLoginResInterceptor;
 import net.sf.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -112,32 +113,37 @@ public class FateConfiguration {
 
     @Bean
     public AccessToken getAccessToken(@Autowired CacheManager cacheManager) {
-        return new AccessToken(this.rpcHost, this.rpcPort, this.appId, this.appSecret, timeout, cacheManager);
+        return new AccessToken(rpcHost, rpcPort, appId, appSecret, timeout, cacheManager);
     }
 
     @Bean
     public AccessTokenInterceptor getAccessTokenInterceptor(@Autowired AccessToken accessToken) {
-        return new AccessTokenInterceptor(this.accessTokenKey, accessToken);
+        return new AccessTokenInterceptor(accessTokenKey, accessToken);
     }
 
     @Bean
     public LoginChecker getLoginChecker(@Autowired AccessTokenInterceptor accessTokenInterceptor) {
-        return new LoginChecker(this.rpcHost, this.rpcPort, timeout, accessTokenInterceptor);
+        return new LoginChecker(rpcHost, rpcPort, timeout, accessTokenInterceptor);
     }
 
     @Bean
     public UserService getUserService(@Autowired AccessTokenInterceptor accessTokenInterceptor) {
-        return new UserService(this.rpcHost, this.rpcPort, timeout, accessTokenInterceptor);
+        return new UserService(rpcHost, rpcPort, timeout, accessTokenInterceptor);
     }
 
     @Bean
     public Fate getFate() {
-        return new Fate(this.fateURL, this.appId);
+        return new Fate(fateURL, appId);
     }
 
     @Bean
-    public AuthInterceptor getAuthInterceptor(@Autowired LoginChecker loginChecker, @Autowired Fate fate) {
-        return new AuthInterceptor(loginChecker, fate, this.ticketIdCookieKey, this.userIdCookieKey);
+    public AuthInterceptor getAuthInterceptor(@Autowired Fate fate) {
+        return new AuthInterceptor(fate);
+    }
+
+    @Bean
+    public CheckLoginResInterceptor getCheckLoginResInterceptor(@Autowired LoginChecker loginChecker) {
+        return new CheckLoginResInterceptor(loginChecker, ticketIdCookieKey, userIdCookieKey);
     }
 
     @Bean

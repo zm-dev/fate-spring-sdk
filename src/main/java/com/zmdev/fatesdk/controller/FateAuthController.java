@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Controller
-public class AuthController {
+public class FateAuthController {
 
     private String ticketIdCookieKey;
     private String userIdCookieKey;
 
-    public AuthController(@Autowired FateConfiguration fateConfiguration) {
+    public FateAuthController(@Autowired FateConfiguration fateConfiguration) {
         this.ticketIdCookieKey = fateConfiguration.getTicketIdCookieKey();
         this.userIdCookieKey = fateConfiguration.getUserIdCookieKey();
     }
