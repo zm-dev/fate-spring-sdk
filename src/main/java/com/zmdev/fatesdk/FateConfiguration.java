@@ -3,7 +3,6 @@ package com.zmdev.fatesdk;
 
 import com.zmdev.fatesdk.grpc_insterceptor.AccessTokenInterceptor;
 import com.zmdev.fatesdk.spring_insterceptor.AuthInterceptor;
-import com.zmdev.fatesdk.spring_insterceptor.CheckLoginResInterceptor;
 import net.sf.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -132,19 +131,15 @@ public class FateConfiguration {
     }
 
     @Bean
-    public Fate getFate() {
-        return new Fate(fateURL, appId);
+    public Fate getFate(@Autowired LoginChecker loginChecker) {
+        return new Fate(fateURL, appId, ticketIdCookieKey, loginChecker);
     }
 
     @Bean
     public AuthInterceptor getAuthInterceptor(@Autowired Fate fate) {
-        return new AuthInterceptor(fate);
+        return new AuthInterceptor(fate, userIdCookieKey);
     }
 
-    @Bean
-    public CheckLoginResInterceptor getCheckLoginResInterceptor(@Autowired LoginChecker loginChecker) {
-        return new CheckLoginResInterceptor(loginChecker, ticketIdCookieKey, userIdCookieKey);
-    }
 
     @Bean
     public CacheManager getCacheManager() {
