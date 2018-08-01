@@ -45,7 +45,8 @@ public class UserService {
 
     public long register(String account, CertificateType certificateType, String password) {
         if (account == null || certificateType == null || password == null) {
-            return 0;
+
+            throw new RuntimeException("参数有误");
         }
         User user = User.newBuilder().setAccount(account).setCertificateType(certificateType).setPassword(password).build();
         return blockingStub.withDeadline(Deadline.after(timeout, TimeUnit.MILLISECONDS)).register(user).getId();
