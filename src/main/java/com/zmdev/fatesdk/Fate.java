@@ -24,8 +24,8 @@ public class Fate {
     }
 
     public void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StringBuffer callback = request.getRequestURL();
-        redirectToLoginWithCallback(callback.toString(), response);
+        // StringBuffer callback = request.getRequestURL();
+        redirectToLoginWithCallback("", response);
     }
 
     public void redirectToLoginWithCallback(String callback, HttpServletResponse response) throws IOException {
